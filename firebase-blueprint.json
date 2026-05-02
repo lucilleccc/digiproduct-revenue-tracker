@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "IncomeSource": {
+      "title": "Income Source",
+      "description": "Represents a stream of income for the user.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the income source."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this income source."
+        }
+      },
+      "required": ["name", "userId"]
+    },
+    "RevenueEntry": {
+      "title": "Revenue Entry",
+      "description": "An entry representing a specific amount of revenue earned from a source on a date.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the revenue was earned (ISO string YYYY-MM-DD)."
+        },
+        "sourceId": {
+          "type": "string",
+          "description": "The ID of the IncomeSource."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount earned in USD."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes about the entry."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this entry."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        }
+      },
+      "required": ["date", "sourceId", "amount", "userId"]
+    },
+    "Goal": {
+      "title": "User Goals",
+      "description": "Daily and monthly revenue targets for the user.",
+      "type": "object",
+      "properties": {
+        "dailyTarget": {
+          "type": "number",
+          "description": "Daily revenue target in USD."
+        },
+        "monthlyTarget": {
+          "type": "number",
+          "description": "Monthly revenue target in USD."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user these goals belong to."
+        }
+      },
+      "required": ["dailyTarget", "monthlyTarget", "userId"]
+    }
+  },
+  "firestore": {
+    "incomeSources": {
+      "schema": "IncomeSource",
+      "description": "Collection of income sources defined by the user."
+    },
+    "revenueEntries": {
+      "schema": "RevenueEntry",
+      "description": "Collection of daily revenue logs."
+    },
+    "userGoals": {
+      "schema": "Goal",
+      "description": "Individual user goals for tracking performance."
+    }
+  }
+}

@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && data.userId == request.auth.uid;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Data Validation ---
+
+    function isValidIncomeSource(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+             && isOwner(data);
+    }
+
+    function isValidRevenueEntry(data) {
+      return data.date is string && data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+             && data.sourceId is string && isValidId(data.sourceId)
+             && data.amount is number && data.amount >= 0
+             && (data.notes == null || (data.notes is string && data.notes.size() <= 500))
+             && isOwner(data);
+    }
+
+    function isValidGoal(data) {
+      return data.dailyTarget is number && data.dailyTarget >= 0
+             && data.monthlyTarget is number && data.monthlyTarget >= 0
+             && isOwner(data);
+    }
+
+    // --- Collections ---
+
+    match /incomeSources/{sourceId} {
+      allow get: if isOwner(existing());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(sourceId) && isValidIncomeSource(incoming());
+      allow update: if isOwner(existing()) && isValidIncomeSource(incoming())
+                       && incoming().userId == existing().userId;
+      allow delete: if isOwner(existing());
+    }
+
+    match /revenueEntries/{entryId} {
+      allow get: if isOwner(existing());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(entryId) && isValidRevenueEntry(incoming())
+                       && exists(/databases/$(database)/documents/incomeSources/$(incoming().sourceId))
+                       && get(/databases/$(database)/documents/incomeSources/$(incoming().sourceId)).data.userId == request.auth.uid;
+      allow update: if isOwner(existing()) && isValidRevenueEntry(incoming())
+                       && incoming().userId == existing().userId;
+      allow delete: if isOwner(existing());
+    }
+
+    match /userGoals/{goalId} {
+      allow get: if isOwner(existing());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(goalId) && isValidGoal(incoming());
+      allow update: if isOwner(existing()) && isValidGoal(incoming())
+                       && incoming().userId == existing().userId;
+      allow delete: if isOwner(existing());
+    }
+  }
+}
