@@ -4,6 +4,7 @@ import { Card } from './Card';
 iimport { RevenueEntry, IncomeSource, UserGoal } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Removed AI integration; placeholder text only
 interface CoachingCardProps {
   entries: RevenueEntry[];
   sources: IncomeSource[];
