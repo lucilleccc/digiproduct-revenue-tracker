@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sparkles, Brain, Loader2 } from 'lucide-react';
 import { Card } from './Card';
-import { getCoachingInsight } from '../lib/gemini';
-import { RevenueEntry, IncomeSource, UserGoal } from '../types';
+iimport { RevenueEntry, IncomeSource, UserGoal } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface CoachingCardProps {
@@ -19,7 +18,7 @@ export function CoachingCard({ entries, sources, goals, todayTotal }: CoachingCa
   useEffect(() => {
     async function fetchInsight() {
       setLoading(true);
-      const text = await getCoachingInsight(entries, sources, goals, todayTotal);
+      const text = "AI insights are coming soon";
       setInsight(text);
       setLoading(false);
     }
@@ -30,7 +29,7 @@ export function CoachingCard({ entries, sources, goals, todayTotal }: CoachingCa
 
   const refreshInsight = async () => {
     setLoading(true);
-    const text = await getCoachingInsight(entries, sources, goals, todayTotal);
+    const text = "AI insights are coming soon";
     setInsight(text);
     setLoading(false);
   };
