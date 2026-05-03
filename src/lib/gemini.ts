@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { RevenueEntry, IncomeSource, UserGoal } from "../types";
 import { format } from "date-fns";
 
-cconst ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 export async function getCoachingInsight(
   entries: RevenueEntry[],
