@@ -97,7 +97,7 @@ export function CoachingCard({ entries, sources, goals, todayTotal }: CoachingCa
               className="h-full bg-gradient-to-r from-royal-purple via-hot-pink to-neon-green opacity-50"
             />
           </div>
-          <span className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">AI Assistant Active</span>
+  
         </div>
       </div>
     </Card>
